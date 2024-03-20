@@ -1,6 +1,7 @@
 #include <string>
 using namespace std;
 int subEach(char, char);
+int compare(string, string);
 /**
  * 두 문자열로 감싸진 big integer를
  * 각각의 자리 별로 뺀 후
@@ -21,6 +22,15 @@ string bigSubtraction(string a, string b) {
         }
     }
 
+    // a가 b보다 더 작다면, 서로 바꾸어 뺄셈 후 마지막에 '-'를 붙여줄 것임.
+    bool isMinus = false;
+    if(compare(a, b) < 0) {
+        string tmp = a;
+        a = b;
+        b = tmp;
+        isMinus = true;
+    }
+
     string result = "";
     int next;
     bool beforeLessThanZero = false;
@@ -39,9 +49,6 @@ string bigSubtraction(string a, string b) {
             beforeLessThanZero = false;
         }
     }
-    if(beforeLessThanZero) {
-        result.replace(0, 1, to_string(next -= 10));
-    }
     // 맨 앞자리에 0이 있다면 제거
     int length = result.length();
     for(int i = 0 ; i < length - 1 ; i++) {
@@ -50,10 +57,24 @@ string bigSubtraction(string a, string b) {
         else
             break;
     }
+
+    if(isMinus)
+        result.insert(0, "-");
+
     return result;
 }
 int subEach(char a, char b) {
     int x = a - '0';
     int y = b - '0';
     return x - y;
+}
+/**
+ * 숫자 a가 b보다 더 작다면 즉시 음수를, 더 크다면 즉시 양수를 반환한다.
+ */
+int compare(string a, string b) {
+    for(int i = 0 ; i < a.length() ; i++) {
+        if(a[i] - '0' != b[i] - '0')
+            return (a[i] - '0') - (b[i] - '0');
+    }
+    return 0;
 }
